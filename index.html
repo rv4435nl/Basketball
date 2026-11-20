@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoopStats | Basketball Analytics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">🏀</div>
+        <div>
+            <h1>HoopStats</h1>
+            <p>TEAM PERFORMANCE ANALYTICS</p>
+        </div>
+    </div>
+    <div class="header-label">BASKETBALL MANAGEMENT SYSTEM</div>
+</header>
+
+<div class="page-container">
+
+    <nav class="tabs">
+        <button class="tab active" data-tab="roster">Team Roster</button>
+        <button class="tab" data-tab="entry">Data Entry</button>
+        <button class="tab" data-tab="players">Player Statistics</button>
+        <button class="tab" data-tab="team">Team Statistics</button>
+    </nav>
+
+    <div id="globalMessage" class="message hidden"></div>
+
+    <!-- ROSTER TAB -->
+    <section id="roster" class="tab-content active">
+        <div class="page-heading">
+            <div>
+                <h2>Team Roster</h2>
+                <p>Manage your players and jersey numbers.</p>
+            </div>
+            <div class="stat-pill" id="rosterCount">0 Active Players</div>
+        </div>
+
+        <div class="panel">
+            <h3>Add New Player</h3>
+            <form id="rosterForm" class="form-grid">
+                <div class="field">
+                    <label for="playerName">Player Name</label>
+                    <input id="playerName" type="text"
+                           placeholder="Enter full name" required>
+                </div>
+                <div class="field">
+                    <label for="jerseyNumber">Jersey Number</label>
+                    <input id="jerseyNumber" type="number"
+                           min="0" max="99" placeholder="e.g. 23" required>
+                </div>
+                <div class="field form-action">
+                    <button type="submit" class="primary-btn">
+                        + Add Player
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <h3>Current Roster</h3>
+                <button class="secondary-btn" id="refreshRoster">
+                    Refresh
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jersey #</th>
+                            <th>Player Name</th>
+                            <th>Player ID</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rosterTable">
+                        <tr><td colspan="5" class="empty">
+                            Loading roster...
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- DATA ENTRY TAB -->
+    <section id="entry" class="tab-content">
+        <div class="page-heading">
+            <div>
+                <h2>Game Data Entry</h2>
+                <p>Create a game and enter individual player performances.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h3>1. Game Information</h3>
+            <form id="gameForm" class="form-grid">
+                <div class="field">
+                    <label for="opponent">Opponent</label>
+                    <input id="opponent" type="text"
+                           placeholder="Enter opponent" required>
+                </div>
+                <div class="field">
+                    <label for="gameDate">Game Date</label>
+                    <input id="gameDate" type="date" required>
+                </div>
+                <div class="field form-action">
+                    <button type="submit" class="primary-btn">
+                        Create Game
+                    </button>
+                </div>
+            </form>
+            <div id="gameMessage" class="inline-message"></div>
+        </div>
+
+        <div class="panel">
+            <h3>2. Select Game and Player</h3>
+            <div class="form-grid two-column">
+                <div class="field">
+                    <label for="selectedGame">Select Game</label>
+                    <select id="selectedGame">
+                        <option value="">Select a game...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="selectedPlayer">Select Player</label>
+                    <select id="selectedPlayer">
+                        <option value="">Select a player...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <form id="statsForm">
+            <div class="panel">
+                <h3>3. Scoring Statistics</h3>
+                <p class="section-description">
+                    Enter shots made and attempted. Points are calculated automatically.
+                </p>
+
+                <div class="stats-input-grid">
+                    <div class="stat-input">
+                        <label>2PT Made</label>
+                        <input type="number" id="twoPM" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>2PT Attempted</label>
+                        <input type="number" id="twoPA" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>3PT Made</label>
+                        <input type="number" id="threePM" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>3PT Attempted</label>
+                        <input type="number" id="threePA" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>FT Made</label>
+                        <input type="number" id="ftm" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>FT Attempted</label>
+                        <input type="number" id="fta" min="0" step="1" value="0">
+                    </div>
+                </div>
+
+                <div class="points-preview">
+                    <span>Calculated Points</span>
+                    <strong id="pointsPreview">0</strong>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>4. Additional Statistics</h3>
+                <div class="stats-input-grid">
+                    <div class="stat-input">
+                        <label>Offensive Rebounds</label>
+                        <input type="number" id="offensiveRebounds" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Defensive Rebounds</label>
+                        <input type="number" id="defensiveRebounds" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Assists</label>
+                        <input type="number" id="assists" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Steals</label>
+                        <input type="number" id="steals" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Blocks</label>
+                        <input type="number" id="blocks" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Turnovers</label>
+                        <input type="number" id="turnovers" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Personal Fouls</label>
+                        <input type="number" id="personalFouls" min="0" step="1" value="0">
+                    </div>
+                    <div class="stat-input">
+                        <label>Minutes Played</label>
+                        <input type="number" id="minutesPlayed" min="0" max="48" step="0.1" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div id="validationErrors" class="error-box hidden"></div>
+
+            <div class="submit-area">
+                <button type="submit" class="primary-btn large-btn">
+                    Add to Database
+                </button>
+                <button type="button" class="secondary-btn" id="clearStats">
+                    Clear Form
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- PLAYER STATISTICS TAB -->
+    <section id="players" class="tab-content">
+        <div class="page-heading">
+            <div>
+                <h2>Player Statistics</h2>
+                <p>Analyze individual performance throughout the season.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="field">
+                <label for="playerAnalysisSelect">Select Player</label>
+                <select id="playerAnalysisSelect">
+                    <option value="">Select a player...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="playerDashboard" class="hidden">
+            <div class="dashboard-heading">
+                <div>
+                    <h3 id="dashboardPlayerName">Player Name</h3>
+                    <p id="dashboardPlayerInfo"></p>
+                </div>
+                <button class="secondary-btn" id="refreshPlayer">
+                    Refresh Statistics
+                </button>
+            </div>
+
+            <div id="playerCards" class="card-grid"></div>
+
+            <div class="panel">
+                <h3>Shooting and Efficiency</h3>
+                <div id="shootingCards" class="card-grid"></div>
+            </div>
+
+            <div class="panel">
+                <h3>Game-by-Game Performance</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Opponent</th>
+                                <th>PTS</th>
+                                <th>REB</th>
+                                <th>AST</th>
+                                <th>FG%</th>
+                                <th>3P%</th>
+                                <th>TS%</th>
+                                <th>EFF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerGameTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM STATISTICS TAB -->
+    <section id="team" class="tab-content">
+        <div class="page-heading">
+            <div>
+                <h2>Team Statistics</h2>
+                <p>Explore team performance and player rankings.</p>
+            </div>
+            <button class="secondary-btn" id="refreshTeam">
+                Refresh Statistics
+            </button>
+        </div>
+
+        <div id="teamCards" class="card-grid"></div>
+
+        <div class="panel">
+            <h3>Player Leaderboard</h3>
+            <div class="field leaderboard-filter">
+                <label for="leaderboardMetric">Rank Players By</label>
+                <select id="leaderboardMetric">
+                    <option value="pointsPerGame">Points Per Game</option>
+                    <option value="reboundsPerGame">Rebounds Per Game</option>
+                    <option value="assistsPerGame">Assists Per Game</option>
+                    <option value="efficiencyPerGame">Efficiency Per Game</option>
+                    <option value="trueShootingPercentage">True Shooting %</option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Games</th>
+                            <th>Statistic</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>HOOPSTATS | BASKETBALL PERFORMANCE ANALYTICS</p>
+    <p>Powered by Google Sheets & Google Apps Script</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
